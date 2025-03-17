@@ -20,8 +20,9 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body className={cairo.className}>
         <ThemeProvider attribute="class" defaultTheme="light">
-          <SonnerProvider />
           {children}
+          <SonnerProvider />
+
         </ThemeProvider>
       </body>
     </html>

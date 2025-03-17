@@ -72,34 +72,34 @@ export default function DonationForm() {
   return (
     <div className="flex flex-col space-y-4">
       {/* Donation Methods */}
-      <div className="grid grid-cols-3 gap-2 mb-2">
+      <div className={"grid grid-cols-3   md:1 gap-2 mb-2"}>
         <Card
           className={`${
             donationMethod === 'bank' ? 'bg-teal-600' : 'bg-teal-400'
-          } text-white p-3 text-center rounded-lg cursor-pointer`}
+          } text-white p-2 text-center rounded-lg cursor-pointer`}
           onClick={() => setDonationMethod('bank')}
         >
-          <div className="text-sm font-medium leading-tight">
-            تصدق عبر حوالة مصرفية
+          <div className="text-sm  leading-tight">
+            تصدق عبر بطاقتك الأئتمانية
           </div>
         </Card>
         <Card
           className={`${
             donationMethod === 'sms' ? 'bg-slate-600' : 'bg-slate-500'
-          } text-white p-3 text-center rounded-lg cursor-pointer`}
+          } text-white p-2 text-center rounded-lg cursor-pointer`}
           onClick={() => setDonationMethod('sms')}
         >
-          <div className="text-sm font-medium leading-tight">
+          <div className="text-sm leading-tight">
             تصدق عبر الرسائل النصية
           </div>
         </Card>
         <Card
           className={`${
             donationMethod === 'card' ? 'bg-blue-950' : 'bg-blue-900'
-          } text-white p-3 text-center rounded-lg cursor-pointer`}
+          } text-white p-2 text-center rounded-lg cursor-pointer`}
           onClick={() => setDonationMethod('card')}
         >
-          <div className="text-sm font-medium leading-tight">تصدق عن أبيك</div>
+          <div className="text-sm leading-tight">تصدق عن أبيك</div>
         </Card>
       </div>
 
@@ -112,7 +112,7 @@ export default function DonationForm() {
           }`}
           onClick={() => {
             setSelectedAmount('100');
-            setCustomAmount('');
+            setCustomAmount('100');
           }}
         >
           <span className="text-3xl font-bold">100</span>{' '}
@@ -127,7 +127,7 @@ export default function DonationForm() {
           }`}
           onClick={() => {
             setSelectedAmount('10');
-            setCustomAmount('');
+            setCustomAmount('10');
           }}
         >
           <span className="text-3xl font-bold">10</span>{' '}
@@ -140,7 +140,7 @@ export default function DonationForm() {
           }`}
           onClick={() => {
             setSelectedAmount('1000');
-            setCustomAmount('');
+            setCustomAmount('1000');
           }}
         >
           <span className="text-3xl font-bold">1000</span>{' '}
@@ -153,7 +153,7 @@ export default function DonationForm() {
           }`}
           onClick={() => {
             setSelectedAmount('500');
-            setCustomAmount('');
+            setCustomAmount('500');
           }}
         >
           <span className="text-3xl font-bold">500</span>{' '}
@@ -213,7 +213,7 @@ export default function DonationForm() {
 
       {/* Donate Button */}
       <Button
-        className="w-full h-14 text-xl bg-gray-300 hover:bg-gray-400 text-gray-700"
+        className="w-full h-14 text-xl bg-gray-300 hover:bg-gray-400 text-gray-700 p-2"
         onClick={handleSubmit}
         disabled={isSubmitting}
       >
