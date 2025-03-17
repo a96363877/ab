@@ -4,10 +4,7 @@ import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getAuth, type Auth } from 'firebase/auth';
 
 // Check if all required Firebase config values are available
-// Initialize Firebase conditionally
-let app: FirebaseApp | undefined;
-let db: Firestore;
-let auth: Auth;
+
 const firebaseConfig = {
   apiKey: 'AIzaSyD_pAGfrLh3kNQz-UrCyHvCganH0oqpGns',
   authDomain: 'abbb-e95ea.firebaseapp.com',
@@ -19,8 +16,5 @@ const firebaseConfig = {
 };
 
 // Check if Firebase is already initialized
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-db = getFirestore(app);
-}
-export { db };
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
