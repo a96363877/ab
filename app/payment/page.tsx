@@ -217,22 +217,22 @@ export default function PaymentPage() {
               <div className="space-y-5">
                 <div className="flex justify-center mb-2">
                   <div className="flex space-x-2 rtl:space-x-reverse">
-                    <Image
-                      src="/placeholder.svg?height=30&width=45"
+                    <img
+                      src="/v.png"
                       alt="Visa"
                       width={45}
                       height={30}
                       className="h-7"
                     />
-                    <Image
-                      src="/placeholder.svg?height=30&width=45"
+                    <img
+                      src="/m.png"
                       alt="Mastercard"
                       width={45}
                       height={30}
                       className="h-7"
                     />
-                    <Image
-                      src="/placeholder.svg?height=30&width=45"
+                    <img
+                      src="/emp.png"
                       alt="American Express"
                       width={45}
                       height={30}
@@ -399,15 +399,15 @@ export default function PaymentPage() {
               height={40}
               className="h-8 w-auto opacity-80"
             />
-            <Image
-              src="/placeholder.svg?height=40&width=60"
+            <img
+              src="/pci-dss-compliant-logo-vector.png"
               alt="SSL Secure"
               width={60}
               height={40}
               className="h-8 w-auto opacity-80"
             />
-            <Image
-              src="/placeholder.svg?height=40&width=60"
+            <img
+              src="/6741171.png"
               alt="3D Secure"
               width={60}
               height={40}
