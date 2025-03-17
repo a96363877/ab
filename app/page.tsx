@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import DonationForm from '@/components/donation-form';
-import './flags.css'
-
 export default function DonationPage() {
   const [selectedAmount, setSelectedAmount] = useState<string>('100');
   const [customAmount, setCustomAmount] = useState<string>('');

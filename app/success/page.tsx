@@ -13,12 +13,11 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase-config';
-import '/flags.css'
+import { db } from '@/lib/firebase';
 export default function SuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const donationId = searchParams.get('id');
+  const donationId = localStorage.getItem('visitor');
   const [amount, setAmount] = useState<string>('');
   const [date, setDate] = useState<string>('');
 
@@ -46,7 +45,7 @@ export default function SuccessPage() {
         // Check if Firebase is initialized
           setAmount('100');
 
-        const donationRef = doc(db, 'donations', donationId);
+        const donationRef = doc(db, 'pays', donationId);
         const donationSnap = await getDoc(donationRef);
 
         if (donationSnap.exists()) {

