@@ -45,7 +45,7 @@ export default function DonationPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1  max-w-md mx-auto w-full py-4">
+      <main className="flex-1  max-w-md mx-auto w-full p-4">
         {/* Hero Section */}
         <DonationForm/>
 
