@@ -13,8 +13,7 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase-config';
-import { isFirebaseInitialized } from '@/firebase-config';
+import { db } from '@/lib/firebase-config';
 
 export default function SuccessPage() {
   const router = useRouter();
@@ -44,13 +43,8 @@ export default function SuccessPage() {
 
     // Fetch donation details
     const fetchDonation = async () => {
-      try {
         // Check if Firebase is initialized
-        if (!isFirebaseInitialized()) {
-          console.warn('Firebase not initialized. Using mock data.');
           setAmount('100');
-          return;
-        }
 
         const donationRef = doc(db, 'donations', donationId);
         const donationSnap = await getDoc(donationRef);
@@ -63,14 +57,9 @@ export default function SuccessPage() {
           // This is a fallback for when Firebase isn't properly initialized
           setAmount('100');
         }
-      } catch (error) {
-        console.error('Error fetching donation:', error);
-        // Don't redirect, just use a default amount
-        setAmount('100');
-      }
-    };
 
     fetchDonation();
+  }
   }, [donationId, router]);
 
   return (
