@@ -15,18 +15,8 @@ export function SonnerProvider() {
           direction: 'rtl',
           textAlign: 'right',
         },
-        success: {
-          style: {
-            background: '#10b981',
-            color: 'white',
-          },
-        },
-        error: {
-          style: {
-            background: '#ef4444',
-            color: 'white',
-          },
-        },
+    
+       
       }}
       closeButton
       richColors

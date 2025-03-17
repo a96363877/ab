@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { saveDonation, recordVisitor } from '@/lib/firestore';
+import { saveDonation, recordVisitor } from '@/lib/firebase';
 
 export default function DonationForm() {
   const router = useRouter();
@@ -17,10 +17,10 @@ export default function DonationForm() {
   const [phone, setPhone] = useState<string>('');
   const [donationMethod, setDonationMethod] = useState<string>('card');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
   // Record visitor when component mounts
   useEffect(() => {
     recordVisitor();
+
   }, []);
 
   const handleSubmit = async () => {
