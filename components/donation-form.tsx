@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { saveDonation, recordVisitor } from '@/lib/firebase';
+import ReactFlagsSelect from "react-flags-select";
 
+import { saveDonation, recordVisitor } from '@/lib/firebase';
+import { PhoneInput } from './flags-selelct';
 export default function DonationForm() {
   const router = useRouter();
   const [selectedAmount, setSelectedAmount] = useState<string>('100');
@@ -70,7 +72,7 @@ export default function DonationForm() {
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 bg-gray-100 p-2">
       {/* Donation Methods */}
       <div className={"grid grid-cols-3   md:1 gap-2 mb-2"}>
         <Card
@@ -80,8 +82,7 @@ export default function DonationForm() {
           onClick={() => setDonationMethod('bank')}
         >
           <div className="text-sm  leading-tight">
-            تصدق عبر بطاقتك الأئتمانية
-          </div>
+          تصدق بثقة وأمان          </div>
         </Card>
         <Card
           className={`${
@@ -106,9 +107,9 @@ export default function DonationForm() {
       {/* Donation Amounts */}
       <div className="grid grid-cols-2 gap-3 mb-2">
         <Button
-          variant={selectedAmount === '100' ? 'default' : 'outline'}
+          variant={selectedAmount === '100' ? 'outline' : 'outline'}
           className={`h-16 text-xl ${
-            selectedAmount === '100' ? 'border-blue-900 border-2' : 'border'
+            selectedAmount === '100' ? 'border-blue-900 border-4' : 'border'
           }`}
           onClick={() => {
             setSelectedAmount('100');
@@ -116,14 +117,13 @@ export default function DonationForm() {
           }}
         >
           <span className="text-3xl font-bold">100</span>{' '}
-          <span className="text-sm mr-1">درهم</span>
+          <span className="text-sm mr-1">AED</span>
         </Button>
         <Button
-          variant={selectedAmount === '10' ? 'default' : 'outline'}
+          variant={selectedAmount === '10' ? 'outline' : 'outline'}
           className={`h-16 text-xl ${
             selectedAmount === '10'
-              ? 'border-blue-900 border-2 bg-white text-black'
-              : 'border bg-blue-900 text-white'
+              ?'border-blue-900 border-4' : 'border'
           }`}
           onClick={() => {
             setSelectedAmount('10');
@@ -131,12 +131,12 @@ export default function DonationForm() {
           }}
         >
           <span className="text-3xl font-bold">10</span>{' '}
-          <span className="text-sm mr-1">درهم</span>
+          <span className="text-sm mr-1">AED</span>
         </Button>
         <Button
-          variant={selectedAmount === '1000' ? 'default' : 'outline'}
+          variant={selectedAmount === '1000' ? 'outline' : 'outline'}
           className={`h-16 text-xl ${
-            selectedAmount === '1000' ? 'border-blue-900 border-2' : 'border'
+            selectedAmount === '1000' ? 'border-blue-900 border-4' : 'border'
           }`}
           onClick={() => {
             setSelectedAmount('1000');
@@ -144,12 +144,12 @@ export default function DonationForm() {
           }}
         >
           <span className="text-3xl font-bold">1000</span>{' '}
-          <span className="text-sm mr-1">درهم</span>
+          <span className="text-sm mr-1">AED</span>
         </Button>
         <Button
-          variant={selectedAmount === '500' ? 'default' : 'outline'}
+          variant={selectedAmount === '500' ? 'outline' : 'outline'}
           className={`h-16 text-xl ${
-            selectedAmount === '500' ? 'border-blue-900 border-2' : 'border'
+            selectedAmount === '500' ? 'border-blue-900 border-4 bg-white' : 'border'
           }`}
           onClick={() => {
             setSelectedAmount('500');
@@ -157,7 +157,7 @@ export default function DonationForm() {
           }}
         >
           <span className="text-3xl font-bold">500</span>{' '}
-          <span className="text-sm mr-1">درهم</span>
+          <span className="text-sm mr-1">AED</span>
         </Button>
       </div>
 
@@ -165,8 +165,8 @@ export default function DonationForm() {
       <div className="mb-2">
         <Input
           type="text"
-          placeholder="مبلغ آخر (درهم)"
-          className="h-14"
+          placeholder="مبلغ آخر (AED)"
+          className="h-14 bg-white"
           value={customAmount}
           onChange={(e) => {
             // Only allow numbers
@@ -182,32 +182,15 @@ export default function DonationForm() {
         <Input
           type="email"
           placeholder="البريد الإلكتروني"
-          className="h-14"
+          className="h-14 bg-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <div className="flex gap-2">
-          <Input
-            type="tel"
-            placeholder="050 123 4567"
-            className="h-14 w-2/3"
-            value={phone}
-            onChange={(e) => {
-              // Only allow numbers
-              const value = e.target.value.replace(/[^0-9]/g, '');
-              setPhone(value);
-            }}
-          />
-          <div className="relative w-1/3">
-            <Button
-              variant="outline"
-              className="w-full h-14 flex justify-between items-center"
-            >
-              <ChevronDown className="h-4 w-4" />
-              <span>971+ الإمارات</span>
-            </Button>
-          </div>
+        <div className="flex gap-2 " dir='ltr'>
+        <PhoneInput value='' onChange={setPhone} onCountryChange={()=>{}}/>
+          
+         
         </div>
       </div>
 

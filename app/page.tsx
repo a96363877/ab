@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import DonationForm from '@/components/donation-form';
+import './flags.css'
 
 export default function DonationPage() {
   const [selectedAmount, setSelectedAmount] = useState<string>('100');
@@ -45,7 +46,26 @@ export default function DonationPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1  max-w-md mx-auto w-full p-4">
+      <main className="flex-1  max-w-md mx-auto w-full m-4 bg-[#ede7dd]">
+      <div className="relative mb-6  w-full">
+          <div className="rounded-lg overflow-hidden">
+            <Image
+              src="/bg.png"
+              alt="Father's Endowment"
+              width={500}
+              height={300}
+              className="w-full h-auto"
+            />
+          </div>
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
+            <h1 className="text-4xl font-bold text-teal-600 mb-2 rtl:font-semibold">
+              وقف الأب
+            </h1>
+            <p className="text-blue-900 text-xl rtl:font-semibold">
+              تبرعك صدقة جارية عن جميع الآباء
+            </p>
+          </div>
+        </div>
         {/* Hero Section */}
         <DonationForm/>
 

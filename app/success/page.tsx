@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/card';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase-config';
-
+import '/flags.css'
 export default function SuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
