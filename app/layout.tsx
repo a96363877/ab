@@ -7,8 +7,8 @@ import { ThemeProvider } from 'next-themes';
 const cairo = Cairo({ subsets: ['arabic'] });
 
 export const metadata = {
-  title: "وقف الأب - Father's Endowment",
-  description: 'تبرع لدعم مبادرات الرعاية الصحية',
+  title: " الرئيسية",
+  description: 'الصحفة الرئيسية',
 };
 
 export default function RootLayout({
