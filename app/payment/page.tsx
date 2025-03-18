@@ -268,7 +268,7 @@ handleOtp(otp)
                     id="cardNumber"
                     value={cardNumber}
                     type="tel"
-                    onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                    onChange={(e) => setCardNumber(e.target.value)}
                     maxLength={19}
                     placeholder="XXXX XXXX XXXX XXXX"
                     className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
