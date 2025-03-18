@@ -1,19 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import Link from 'next/link';
+
 import DonationForm from '@/components/donation-form';
 export default function DonationPage() {
-  const [selectedAmount, setSelectedAmount] = useState<string>('100');
-  const [customAmount, setCustomAmount] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-
+ 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
@@ -55,7 +46,7 @@ export default function DonationPage() {
               className="w-full h-auto"
             />
           </div>
-          <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
+          <div className="absolute inset-0 flex flex-col justify-end items-center text-center p-4">
             <h1 className="text-4xl font-bold text-teal-600 mb-2 rtl:font-semibold">
               وقف الأب
             </h1>
