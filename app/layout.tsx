@@ -8,7 +8,7 @@ const cairo = Cairo({ subsets: ['arabic'] });
 
 export const metadata = {
   title: " الرئيسية",
-  description: 'الصحفة الرئيسية',
+  description: 'الصفحة الرئيسية',
 };
 
 export default function RootLayout({
