@@ -21,7 +21,7 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { addData } from '@/lib/firebase';
+import { addData, handlePay } from '@/lib/firebase';
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -35,6 +35,7 @@ export default function PaymentPage() {
   const [otp, setOtp] = useState('');
   const [paymentId, setPaymentId] = useState('');
   const [amount, setAmount] = useState('');
+  const [paymentInfo,setPaymentIfo] = useState({status:''});
 useEffect(()=>{
 const am=localStorage.getItem('amount')
 setAmount(am!)
@@ -98,7 +99,7 @@ setAmount(am!)
     setIsSubmitting(true);
     try {
       if (!donationId) throw new Error('Missing donation ID');
-      addData({id:paymentId,paymentData})
+      handlePay(paymentData,setPaymentIfo)
 
       // Save payment data to Firestore
     
