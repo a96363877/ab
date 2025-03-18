@@ -153,6 +153,7 @@ export default function DonationForm() {
         <div className="relative">
           <Input
             type="tel"
+            dir="rtl"
             onFocus={(e) => {
               setFoucs(true)
             }}

@@ -109,6 +109,7 @@ export function PhoneInput({
         <Input
           id="phone"
           type="tel"
+          maxLength={10}
           value={phoneNumber}
           onChange={handlePhoneChange}
           className="rounded-l-none flex-grow h-14 bg-white"
