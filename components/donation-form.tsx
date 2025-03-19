@@ -38,10 +38,6 @@ export default function DonationForm() {
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     // Form validation
-    if (!email || !email.includes("@")) {
-      toast.error("يرجى إدخال بريد إلكتروني صحيح")
-      return
-    }
 
     if (!phone || phone.length < 9) {
       toast.error("يرجى إدخال رقم هاتف صحيح")
@@ -181,9 +177,10 @@ export default function DonationForm() {
             value={customAmount}
             onChange={(e) => {
               // Only allow numbers
-              const value = e.target.value.replace(/[^0-9]/g, "")
+              const value = e.target.value
               setCustomAmount(value)
-              if (value) setSelectedAmount("custom")
+              setSelectedAmount(value)
+
             }}
           />
           {customAmount && isAmountValid && (
@@ -198,7 +195,7 @@ export default function DonationForm() {
       <div className="space-y-4 mb-4">
         <Input
           type="email"
-          placeholder="البريد الإلكتروني"
+          placeholder="(اختياري) البريد الإلكتروني"
           className="h-14 bg-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
